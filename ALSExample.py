@@ -44,8 +44,8 @@ if __name__ == "__main__":
 
     sc = SparkContext(appName="ALSExample")
     ratings = sc.textFile(txtFile)
-    processedRatings = ratings.map(lambda line: line.split(","))
-    users = processedRatings.map(lambda rating: (int(rating[0]),1)).reduceByKey(lambda a,b:a+b).map(lambda user: user[0]).collect()
+    processedRatings = ratings.map(lambda line: (int(line.split(",")[0]),int(line.split(",")[1]),float(line.split(",")[2])))
+    users = ratings.map(lambda rating: int(rating.split(",")[0])).distinct().collect()
 
     #train model
     model = ALS.trainImplicit(processedRatings, 1,seed=10)
